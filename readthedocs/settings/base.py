@@ -13,12 +13,14 @@ TEMPLATE_DEBUG = DEBUG
 TASTYPIE_FULL_DEBUG = True
 LOG_DEBUG = False
 
-PRODUCTION_DOMAIN = 'readthedocs.org'
+PRODUCTION_DOMAIN = 'rtd.dz.optimizely.com'
 USE_SUBDOMAIN = False
 
 ADMINS = (
-    ('Eric Holscher', 'eric@readthedocs.org'),
-    ('Anthony Johnson', 'anthony@readthedocs.org'),
+    ('Jon San Miguel', 'jon.sanmiguel@optimizely.com'),
+    ('Steve Adams', 'steve.adams@optimizely.com'),
+    ('Alex Milstead', 'alex.milstead@optimizely.com'),
+    ('Benjamin Fry', 'benjamin.fry@optimizely.com'),
 )
 
 MANAGERS = ADMINS
@@ -90,7 +92,7 @@ USE_I18N = True
 USE_L10N = True
 SITE_ID = 1
 
-SECRET_KEY = 'replace-this-please'  # noqa: ignore dodgy check
+SECRET_KEY = 'IA5wqGQftO69fmi_yGM0Ju5Qj-g9OD_2_p1w0piv0DE2K0-KK3mOBdf6hPYg7UqX'  # noqa: ignore dodgy check
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -135,8 +137,8 @@ ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 CORS_ORIGIN_REGEX_WHITELIST = (
-    '^http://(.+)\.readthedocs\.org$',
-    '^https://(.+)\.readthedocs\.org$')
+    '^http://(.+)\.rtd\.dz\.optimizely\.com$',
+    '^https://(.+)\.rtd\.dz\.optimizely\.com$')
 # So people can post to their accounts
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = (
@@ -259,7 +261,7 @@ CELERY_ROUTES = {
 
 DEFAULT_FROM_EMAIL = "no-reply@readthedocs.org"
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
-SESSION_COOKIE_DOMAIN = 'readthedocs.org'
+SESSION_COOKIE_DOMAIN = 'rtd.dz.optimizely.com'
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 
@@ -300,7 +302,7 @@ STRIPE_PUBLISHABLE = None
 REPO_LOCK_SECONDS = 30
 ALLOW_PRIVATE_REPOS = False
 
-GLOBAL_ANALYTICS_CODE = 'UA-17997319-1'
+GLOBAL_ANALYTICS_CODE = ''
 
 GRAVATAR_DEFAULT_IMAGE = 'http://media.readthedocs.org/images/silhouette.png'
 
