@@ -102,8 +102,9 @@ class GitHubService(Service):
             repo.description = fields['description']
             repo.ssh_url = fields['ssh_url']
             repo.html_url = fields['html_url']
-            repo.private = fields['private']
-            if repo.private:
+            repo.private = False
+            repo.clone_url = fields['clone_url']
+            if fields['private'] and 'github' not in fields['clone_url']:
                 repo.clone_url = fields['ssh_url']
             else:
                 repo.clone_url = fields['clone_url']

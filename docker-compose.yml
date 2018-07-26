@@ -1,0 +1,94 @@
+---
+version: "3"
+volumes:
+  rtd-redis: {}
+  rtd-postgres: {}
+services:
+  postgres:
+    image: postgres:9.5
+    ports:
+      - 5432
+    volumes:
+      - rtd-postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=test
+      - POSTGERS_PASSWORD=test
+  redis:
+    image: redis:4.0.2-alpine
+    ports:
+      - 6379
+    volumes:
+      - rtd-redis:/data
+  elasticsearch:
+    image: elasticsearch:1.7
+    command: elasticsearch -Dhttp.host=0.0.0.0
+    environment:
+      - RUN_AS_ROOT='true'
+    ports:
+      - 9200
+      - 9300
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Celery stuff.
+      - C_FORCE_ROOT='true'
+
+      # Django settings, obvs.
+      - DJANGO_SETTINGS_MODULE=readthedocs.settings.environment
+      - DEBUG=true
+
+      # postgres settings.
+      - DB_USER=test
+      - DB_PASS=test
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=rtfd
+
+      # redis cache.
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+      # slumber api info
+      - SLUMBER_USER=admin
+      - SLUMBER_PASS=admin
+      - SLUMBER_HOST=http://localhost:8000
+
+      # self-referential stuff
+      - PROD_HOST=localhost:8080
+      - WEBHOOK_HOST=hook.localhost:8080
+      - WEBSOCKET_HOST=localhost:8080
+
+      # Email details
+      - ENABLE_EMAILS=false
+      - EMAIL_HOST=${RTD_EMAIL_HOST}
+      - EMAIL_USER=${RTD_EMAIL_USER}
+      - EMAIL_PASS=${RTD_EMAIL_PASS}
+      - FROM_EMAIL=${RTD_FROM_EMAIL}
+
+      # Elastic search stuff.
+      - ES_HOSTS=[{"host":"elasticsearch","port":9200}]
+
+      # CORS
+      - CORS_HOSTS=["localhost:8080"]
+
+      # File sync
+      - FILE_SYNCER=readthedocs.privacy.backends.syncers.LocalSyncer
+
+      # Privacy level
+      - DEFAULT_PRIVACY_LEVEL=private
+
+      # Whether or not to allow private repos.
+      - ALLOW_PRIVATE_REPOS=true
+
+      # Whether tasks should be run async or not.
+      - ASYNC_TASKS=true
+    volumes:
+       - .:/app/readthedocs
+       - ./configs/nginx/readthedocs.conf:/etc/nginx/conf.d/readthedocs.conf
+       - ./configs/supervisord/readthedocs.conf:/etc/supervisor/conf.d/readthedocs.conf
+    depends_on:
+      - postgres
+      - redis
+      - elasticsearch
