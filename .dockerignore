@@ -1,0 +1,11 @@
+private_*
+public_*
+*.egg-info
+*.db
+dev.db
+celery-beat.db
+*.git
+*.github
+*.tx
+logs/*
+user_builds

@@ -101,9 +101,10 @@ class ProjectDetailView(BuildTriggerMixin, ProjectOnboardMixin, DetailView):
             reverse('project_badge', args=[project.slug]),
             project.get_default_version(),
         )
+
         context['site_url'] = '{url}?badge={version}'.format(
             url=project.get_docs_url(version_slug),
-            version=version_slug,
+            version=version_slug, protocol=protocol
         )
 
         return context

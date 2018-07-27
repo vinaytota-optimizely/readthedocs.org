@@ -375,13 +375,20 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse('projects_detail', args=[self.slug])
 
-    def get_docs_url(self, version_slug=None, lang_slug=None, private=None):
+    def get_docs_url(self, version_slug=None, lang_slug=None, private=None,
+                     protocol='http'):
         """
         Return a URL for the docs.
 
         Always use http for now, to avoid content warnings.
         """
-        return resolve(project=self, version_slug=version_slug, language=lang_slug, private=private)
+        return resolve(
+            project=self,
+            version_slug=version_slug,
+            language=lang_slug,
+            private=private,
+            protocol=protocol
+        )
 
     def get_builds_url(self):
         return reverse('builds_project_list', kwargs={
@@ -645,12 +652,16 @@ class Project(models.Model):
         # TODO: this seems to be the only method that receives a
         # ``version.slug`` instead of a ``Version`` instance (I prefer an
         # instance here)
-
+        from readthedocs.oauth.services import GitHubService
         backend = backend_cls.get(self.repo_type)
         if not backend:
             repo = None
         else:
-            repo = backend(self, version, environment)
+            token = None
+            if 'github' in self.repo.lower():
+                token = GitHubService.get_token_for_project(self)
+            repo = backend(self, version, environment, token=token)
+            # repo = backend(self, version, environment)
         return repo
 
     def repo_nonblockinglock(self, version, max_lock_age=5):
